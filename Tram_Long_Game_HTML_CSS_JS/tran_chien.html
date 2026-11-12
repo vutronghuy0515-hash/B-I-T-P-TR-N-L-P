@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#080d21" />
+  <meta name="description" content="Trảm Long - game anh hùng chiến đấu cùng rồng, xây dựng từ bài tập JavaScript." />
+  <title>TRẢM LONG | Anh Hùng Đấu Rồng</title>
+  <link rel="stylesheet" href="tran_chien.css" />
+  <script src="tran_chien.js" defer></script>
+</head>
+<body>
+  <div class="page-glow" aria-hidden="true"></div>
+  <div class="app">
+    <header class="site-header">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">⚔</div>
+        <div>
+          <span class="eyebrow">JAVASCRIPT • BATTLE SIMULATOR</span>
+          <h1>TRẢM <span>LONG</span></h1>
+        </div>
+      </div>
+      <div class="header-actions">
+        <span class="status-pill"><span class="pulse-dot"></span> GAME 2D • OFFLINE</span>
+        <button id="muteBtn" class="icon-button" type="button" aria-label="Tắt âm thanh" title="Bật / tắt âm thanh">🔊</button>
+        <button id="restartBtn" class="outline-button" type="button">↻ <span>CHƠI LẠI</span></button>
+      </div>
+    </header>
+
+    <main class="main-layout">
+      <section class="battle-board" aria-label="Chiến trường">
+        <div class="board-heading">
+          <div><span class="signal-bullet">✦</span> <span>CHƯƠNG 01</span> <span class="subtle-dot">/</span> CUỘC CHIẾN VỚI RỒNG GIÀ</div>
+          <div id="turnLabel" class="round-counter">LƯỢT <strong>01</strong></div>
+        </div>
+
+        <div class="hud">
+          <div class="hud-side hero-hud">
+            <div class="hud-top">
+              <div class="combatant-icon combatant-icon--hero">⚡</div>
+              <div class="hud-name-wrap"><span class="hud-subname">NGƯỜI THÁCH ĐẤU</span><strong id="heroDisplayName">ANH HÙNG</strong><span id="heroClassLabel" class="class-tag">Chiến Binh • LV 5</span></div>
+              <div id="heroHpNumber" class="hp-numeric">210<span> / 210</span></div>
+            </div>
+            <div class="meter-track" role="progressbar" aria-label="Máu anh hùng" id="heroHealthMeter" aria-valuemin="0" aria-valuemax="210" aria-valuenow="210"><div id="heroHpFill" class="meter-fill meter-fill--hero"></div></div>
+            <div class="hud-stats"><span>⚔ <b id="statStr">59</b> STR</span><span>✦ <b id="statAgi">78</b> AGI</span><span>✧ <b id="statInt">44</b> INT</span></div>
+          </div>
+          <div class="hud-versus" aria-hidden="true"><span>VS</span></div>
+          <div class="hud-side dragon-hud">
+            <div class="hud-top">
+              <div class="combatant-icon combatant-icon--dragon">♨</div>
+              <div class="hud-name-wrap"><span class="hud-subname">THỦ LĨNH HẮC ÁM</span><strong>RỒNG GIÀ</strong><span class="class-tag class-tag--dragon">BOSS • HỎA THUẬT</span></div>
+              <div id="dragonHpNumber" class="hp-numeric">600<span> / 600</span></div>
+            </div>
+            <div class="meter-track" role="progressbar" aria-label="Máu Rồng Già" id="dragonHealthMeter" aria-valuemin="0" aria-valuemax="600" aria-valuenow="600"><div id="dragonHpFill" class="meter-fill meter-fill--dragon"></div></div>
+            <div class="hud-stats"><span>♨ <b>100</b> STR</span><span>✦ <b>15</b> AGI</span><span>✧ <b>80</b> INT</span></div>
+          </div>
+        </div>
+
+        <div class="battle-stage" id="battleStage">
+          <div class="starfield" aria-hidden="true"></div>
+          <div class="moon" aria-hidden="true"></div>
+          <div class="mountains mountains--back" aria-hidden="true"></div>
+          <div class="mountains mountains--front" aria-hidden="true"></div>
+          <div class="ground" aria-hidden="true"></div>
+          <div class="stage-label stage-label--left">THE HERO</div>
+          <div class="stage-label stage-label--right">THE DRAGON</div>
+
+          <div class="fighter fighter--hero" id="heroSprite" aria-label="Nhân vật anh hùng">
+            <div class="fighter-aura"></div>
+            <div class="fighter-frame fighter-frame--hero"><img src="tran_chien_anh_hung.jpg" alt="Anh hùng Người Nhện lao vào chiến đấu" draggable="false" /></div>
+            <div class="fighter-shadow"></div>
+            <div class="fighter-caption"><span>01</span><b>ANH HÙNG</b><small>READY TO FIGHT</small></div>
+          </div>
+          <div class="fight-center" aria-hidden="true"><span>✕</span><i></i></div>
+          <div class="fighter fighter--dragon" id="dragonSprite" aria-label="Nhân vật Rồng Già">
+            <div class="fighter-aura"></div>
+            <div class="fighter-frame fighter-frame--dragon"><img src="tran_chien_rong.jpg" alt="Rồng uy nghi với đường viền phát sáng nhiều màu" draggable="false" /></div>
+            <div class="fighter-shadow"></div>
+            <div class="fighter-caption"><span>02</span><b>RỒNG GIÀ</b><small>FINAL BOSS</small></div>
+          </div>
+
+          <div class="fx-layer" id="fxLayer" aria-hidden="true"></div>
+          <div class="battle-announcement" id="battleAnnouncement" role="status" aria-live="polite">HÃY SẴN SÀNG!</div>
+        </div>
+        <div class="stage-footer"><span><i class="indicator-green"></i> <span id="battleStatus">CHỜ NGƯỜI CHƠI BẮT ĐẦU</span></span><span class="stage-footer-tip">SÁT THƯƠNG • NÉ ĐÒN • CHÍ MẠNG</span></div>
+      </section>
+
+      <div class="bottom-grid">
+        <section class="command-panel" aria-labelledby="commandTitle">
+          <div class="panel-title-line"><div><p class="panel-eyebrow">YOUR TURN</p><h2 id="commandTitle">CHỌN HÀNH ĐỘNG</h2></div><span class="command-count" id="actionHint">Đang chuẩn bị</span></div>
+          <div class="command-buttons">
+            <button type="button" id="attackBtn" class="action-button action-button--attack" disabled><span class="action-symbol">⚔</span><span><b>TẤN CÔNG</b><small>Đòn đánh cơ bản</small></span><span class="key-hint">1</span></button>
+            <button type="button" id="skillBtn" class="action-button action-button--skill" disabled><span class="action-symbol">✦</span><span><b>TUYỆT KỸ</b><small id="skillHint">Sát thương mạnh</small></span><span class="key-hint">2</span></button>
+            <button type="button" id="defendBtn" class="action-button action-button--defend" disabled><span class="action-symbol">⬡</span><span><b>PHÒNG THỦ</b><small>Giảm 65% sát thương</small></span><span class="key-hint">3</span></button>
+          </div>
+          <p class="helper-note">Bấm <kbd>1</kbd>, <kbd>2</kbd>, <kbd>3</kbd> hoặc nhấp nút để ra đòn. Rồng tự phản công sau lượt của bạn.</p>
+        </section>
+
+        <section class="log-panel" aria-labelledby="logTitle"><div class="panel-title-line"><div><p class="panel-eyebrow">LIVE FEED</p><h2 id="logTitle">NHẬT KÝ CHIẾN ĐẤU</h2></div><span class="log-live"><i></i> LIVE</span></div><ol class="combat-log" id="combatLog" aria-live="polite"><li class="log-system"><span>✦</span> Chào mừng đến đấu trường Trảm Long.</li></ol></section>
+      </div>
+      <details class="source-explanation"><summary>⌘ Logic kế thừa từ code JavaScript gốc <span>Nhấn để xem</span></summary><p>Giữ phép tính cấp độ, XP, điểm kỹ năng, <code>strength</code>, <code>agility</code>, <code>intel</code>; ba phân cấp nhân vật và cơ chế <code>Math.random()</code> xác định đánh trúng, né tránh, chí mạng. Rồng vẫn có 600 HP, STR 100, AGI 15, INT 80. Để trận đấu có thể chơi được thay vì kết thúc ngay: máu anh hùng được nhân đôi, sát thương hỏa cầu của rồng còn 32% và các xác suất được giới hạn/cân bằng. Các phép điều chỉnh được chú thích trong <code>tran_chien.js</code>.</p></details>
+    </main>
+    <footer class="site-footer"><span>TRẢM LONG / JAVASCRIPT GAME PROJECT</span><span>HTML + CSS + VANILLA JS • KHÔNG CẦN INTERNET</span></footer>
+  </div>
+
+  <div class="modal-backdrop" id="setupModal" role="dialog" aria-modal="true" aria-labelledby="setupTitle">
+    <div class="modal-card setup-card"><p class="modal-kicker">✦ HỒI I: THỨC TỈNH ANH HÙNG</p><h2 id="setupTitle">SẴN SÀNG <span>TRẢM LONG?</span></h2><p class="modal-description">Chọn phân cấp của bạn. Một con rồng cổ đại đang chờ ở chiến trường phía trước.</p>
+      <label class="name-label" for="playerName">TÊN ANH HÙNG</label><input id="playerName" class="name-input" type="text" maxlength="28" value="Vũ Trọng Huy" autocomplete="off" placeholder="Nhập tên anh hùng" />
+      <div class="selection-label">CHỌN PHÂN CẤP</div>
+      <div class="class-select" role="radiogroup" aria-label="Phân cấp anh hùng">
+        <label class="class-card"><input type="radio" name="heroClass" value="a" checked /><span class="class-emblem">⚔</span><b>CHIẾN BINH</b><small>+15 STR · −10 AGI</small></label>
+        <label class="class-card"><input type="radio" name="heroClass" value="b" /><span class="class-emblem">☽</span><b>SÁT THỦ</b><small>+10 AGI · +5 INT</small></label>
+        <label class="class-card"><input type="radio" name="heroClass" value="c" /><span class="class-emblem">➶</span><b>THỢ SĂN</b><small>+10 AGI · +15 INT</small></label>
+      </div>
+      <button class="start-button" type="button" id="startBtn">BẮT ĐẦU CHIẾN ĐẤU <span>➜</span></button>
+      <p class="modal-footnote">Có hiệu ứng hình ảnh, thanh máu và âm thanh. Hãy bật loa để trải nghiệm đầy đủ.</p>
+    </div>
+  </div>
+
+  <div class="modal-backdrop is-hidden" id="resultModal" role="dialog" aria-modal="true" aria-labelledby="resultTitle" aria-hidden="true"><div class="modal-card result-card"><div class="result-medal" id="resultMedal">🏆</div><p class="modal-kicker" id="resultKicker">KẾT THÚC TRẬN CHIẾN</p><h2 id="resultTitle">CHIẾN THẮNG!</h2><p class="modal-description" id="resultText">Bạn đã đánh bại Rồng Già.</p><div class="result-recap" id="resultRecap"></div><button type="button" id="playAgainBtn" class="start-button">CHƠI LẠI <span>↻</span></button></div></div>
+</body>
+</html>
